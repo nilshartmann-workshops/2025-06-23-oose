@@ -34,3 +34,15 @@ export const getReservationListOpts = (orderBy: OrderBy) =>
       return reservations;
     },
   });
+
+export const getReservationByIdOpts = (reservationId: string) =>
+  queryOptions({
+    // 🤔 warum sieht der Query Key so aus ('detail')?
+    queryKey: ["reservations", "detail", reservationId],
+    async queryFn() {
+      const result = await apiKy
+        .get<Reservation>(`reservations/${reservationId}`)
+        .json();
+      return result;
+    },
+  });
