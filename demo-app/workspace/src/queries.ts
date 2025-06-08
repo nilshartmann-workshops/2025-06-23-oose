@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import _ky from "ky";
 
-import { Reservation } from "./types.ts";
+import { OrderBy, Reservation } from "./types.ts";
 
 export const apiKy = _ky.extend({
   // retries im Fehlerfall besser über TanStack Query machen
@@ -22,12 +22,15 @@ export const apiKy = _ky.extend({
 //   ✅ was müssen wir machen, wenn wir den Query woanders verwenden wollen?
 //   ✅ was passiert, wenn wir die Backend URL anpassen müssen (z.B. je nach Deployment)
 
-export const getReservationListOpts = () =>
+export const getReservationListOpts = (orderBy: OrderBy) =>
   queryOptions({
     // 🤔 warum 'list' am Ende?
-    queryKey: ["reservations", "list"],
+    // 🤔 was passiert, wenn wir orderBy nicht als Key aufnehmen?
+    queryKey: ["reservations", "list", { orderBy }],
     async queryFn() {
-      const reservations = apiKy.get<Reservation[]>("reservations").json();
+      const reservations = apiKy
+        .get<Reservation[]>(`reservations?orderBy=${orderBy}`)
+        .json();
       return reservations;
     },
   });
