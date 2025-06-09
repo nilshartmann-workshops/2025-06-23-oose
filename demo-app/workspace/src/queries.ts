@@ -28,10 +28,10 @@ export const getReservationListOpts = (orderBy: OrderBy) =>
     // 🤔 was passiert, wenn wir orderBy nicht als Key aufnehmen?
     queryKey: ["reservations", "list", { orderBy }],
     async queryFn() {
-      const reservations = apiKy
-        .get<Reservation[]>(`reservations?orderBy=${orderBy}`)
+      const reservations = await apiKy
+        .get(`reservations?orderBy=${orderBy}`)
         .json();
-      return reservations;
+      return Reservation.array().parse(reservations);
     },
   });
 
@@ -40,9 +40,7 @@ export const getReservationByIdOpts = (reservationId: string) =>
     // 🤔 warum sieht der Query Key so aus ('detail')?
     queryKey: ["reservations", "detail", reservationId],
     async queryFn() {
-      const result = await apiKy
-        .get<Reservation>(`reservations/${reservationId}`)
-        .json();
-      return result;
+      const result = await apiKy.get(`reservations/${reservationId}`).json();
+      return Reservation.parse(result);
     },
   });
