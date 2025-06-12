@@ -9,6 +9,8 @@ export const createQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
+        // Im Fehlerfall nicht nochmal probieren
+        retry: false,
         // -> führt dazu, dass Daten, die "stale" sind beim mounten
         //    einer Komponente neu geladen werden
         refetchOnMount: true, // true ist der Default

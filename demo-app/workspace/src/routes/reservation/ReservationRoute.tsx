@@ -1,6 +1,17 @@
-import { Box, Container } from "@mui/material";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import {
+  useQueryErrorResetBoundary,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { Suspense } from "react";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { useParams } from "react-router-dom";
 
 import ReservationDetailCard from "../../components/ReservationDetailCard.tsx";
@@ -14,6 +25,7 @@ export default function ReservationRoute() {
     throw new Error("Invalid reservationId");
   }
 
+  const { reset } = useQueryErrorResetBoundary();
   return (
     <Container>
       <Box
@@ -28,11 +40,30 @@ export default function ReservationRoute() {
 
       */}
 
-        <Suspense fallback={<ReservationDetailPlaceholder />}>
-          <ReservationDetailLoader reservationId={reservationId} />
-        </Suspense>
+        <ErrorBoundary FallbackComponent={MyErrorBoundary} onReset={reset}>
+          <Suspense fallback={<ReservationDetailPlaceholder />}>
+            <ReservationDetailLoader reservationId={reservationId} />
+          </Suspense>
+        </ErrorBoundary>
       </Box>
     </Container>
+  );
+}
+
+function MyErrorBoundary(props: FallbackProps) {
+  return (
+    <Paper>
+      <Stack padding={2}>
+        <Typography variant={"h2"}>Error!</Typography>
+        {props.error.toString()}
+        <Button
+          variant={"contained"}
+          onClick={() => props.resetErrorBoundary()}
+        >
+          Retry!
+        </Button>
+      </Stack>
+    </Paper>
   );
 }
 
