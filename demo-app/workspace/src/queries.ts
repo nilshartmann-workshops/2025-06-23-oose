@@ -1,4 +1,8 @@
-import { queryOptions } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import _ky from "ky";
 
 import { OrderBy, Reservation } from "./types.ts";
@@ -44,3 +48,25 @@ export const getReservationByIdOpts = (reservationId: string) =>
       return Reservation.parse(result);
     },
   });
+
+export const useSetStatusMutation = (reservationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    async mutationFn(status: string) {
+      const result = await apiKy
+        .put(`reservations/${reservationId}/status`, {
+          json: { status },
+        })
+        .json();
+      return Reservation.parse(result);
+    },
+    onSuccess(data: Reservation) {
+      // selbst "refetchOnMount" im QueryClient hilft uns hier nicht,
+      // weil die Komponente ja nicht neu gemounted wird
+      queryClient.setQueryData(
+        getReservationByIdOpts(reservationId).queryKey,
+        data,
+      );
+    },
+  });
+};

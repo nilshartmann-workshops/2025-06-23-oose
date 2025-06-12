@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useSetStatusMutation } from "../queries.ts";
 import type { Reservation } from "../types.ts";
 import StatusChip from "./StatusChip.tsx";
 import TimeRangeChip from "./TimeRangeChip.tsx";
@@ -19,6 +20,12 @@ type ReservationDetailCardProps = {
 export default function ReservationDetailCard({
   reservation,
 }: ReservationDetailCardProps) {
+  // 🤔 ist es gut, hier die Mutation aufzurufen,
+  //  oder sollte man die außerhalb der Komponente lassen?
+  //   -> DetailCard nur Anzeige + Callback+Props ?
+  //   -> Nachteil: evtl. viele Props...
+  const mutation = useSetStatusMutation(reservation.id);
+
   return (
     <Card
       sx={{ minWidth: 600, maxWidth: 600, mx: "auto", mt: 4, boxShadow: 3 }}
@@ -52,10 +59,18 @@ export default function ReservationDetailCard({
           <Box sx={{ mb: 2 }}>
             <StatusChip status={reservation.status} variant={"lg"} />
           </Box>
-          <Button variant="text" disabled={reservation.status === "Confirmed"}>
+          <Button
+            variant="text"
+            disabled={reservation.status === "Confirmed" || mutation.isPending}
+            onClick={() => mutation.mutate("Confirmed")}
+          >
             Confirm
           </Button>
-          <Button variant="text" disabled={reservation.status === "Rejected"}>
+          <Button
+            variant="text"
+            disabled={reservation.status === "Rejected" || mutation.isPending}
+            onClick={() => mutation.mutate("Rejected")}
+          >
             Reject
           </Button>
         </Stack>
