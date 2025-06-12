@@ -6,7 +6,11 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
+
+import { getReservationByIdOpts } from "../queries.ts";
+import ReservationDetailCard from "./ReservationDetailCard.tsx";
 
 type ReservationDetailDialogProps = {
   onClose: () => void;
@@ -17,7 +21,9 @@ export default function ReservationDetailDialog({
   onClose,
   reservationId,
 }: ReservationDetailDialogProps) {
-  console.log(`TODO: Reservation mit Id ${reservationId} laden!`);
+  const { data: reservation } = useSuspenseQuery(
+    getReservationByIdOpts(reservationId),
+  );
 
   return (
     <Dialog open={true} onClose={onClose} maxWidth="md" fullWidth>
@@ -39,13 +45,7 @@ export default function ReservationDetailDialog({
 
       <DialogContent dividers>
         <Box sx={{ mt: 1 }}>
-          {/*
-
-          TODO:
-          - mit getByReservationId-Query die Reservation laden
-          - die geladene Reservation mit <ReservationDetailCard /> hier anzeigen
-
-          */}
+          <ReservationDetailCard reservation={reservation} />
         </Box>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
@@ -32,9 +32,15 @@ function ReservationsLoader() {
   //  können wir auch später bei Zod besprechen
   const orderBy = searchParams.get("orderBy") as OrderBy;
 
-  const { data: reservations } = useSuspenseQuery(
+  // 🕵️‍♂️ Manuelles Aktualisieren der Liste
+  const { data: reservations, refetch } = useSuspenseQuery(
     getReservationListOpts(orderBy),
   );
 
-  return <ReservationTable reservations={reservations} />;
+  return (
+    <Stack>
+      <Button onClick={() => refetch()}>Reload</Button>
+      <ReservationTable reservations={reservations} />
+    </Stack>
+  );
 }

@@ -31,6 +31,8 @@ export const getReservationListOpts = (orderBy: OrderBy) =>
     // 🤔 warum 'list' am Ende?
     // 🤔 was passiert, wenn wir orderBy nicht als Key aufnehmen?
     queryKey: ["reservations", "list", { orderBy }],
+    // 🕵️‍♂️ das wäre auch eine Möglichkeit, die Liste automatisch zu aktualisieren:
+    // refetchInterval: 1000,
     async queryFn() {
       const reservations = await apiKy
         .get(`reservations?orderBy=${orderBy}`)
@@ -67,6 +69,22 @@ export const useSetStatusMutation = (reservationId: string) => {
         getReservationByIdOpts(reservationId).queryKey,
         data,
       );
+
+      // ähnliches Problem: wenn die Mutation im Dialog ausgeführt wird,
+      // und der Dialog geschlossen wird, wird die TABELLE nicht neu gemounted
+      // d.h. der Query wird nicht neu ausgeführt
+      // 🤔 wann wird der Query eigentlich neu ausgeführt, wenn die Mutation
+      //    von der Detail-Seite aufgerufen wird?
+      //    -> nicht unmittelbar: invalidateQueries "markiert" den Query nur!
+      //    -> der Query wird es AUSGEFÜHRT, wenn es mind. einen Observer
+      //       gibt
+      //       -> übrigens NICHT wenn 'refetchOnMount' auf false gesetzt wird
+      //       -> dazu müsste man refetchQueryies nehmen
+      queryClient.invalidateQueries({
+        // 🤔 warum nicht mit orderBy im QueryKey?
+        //    -> wir wollen ALLE listen invalidieren
+        queryKey: ["reservations", "list"],
+      });
     },
   });
 };
