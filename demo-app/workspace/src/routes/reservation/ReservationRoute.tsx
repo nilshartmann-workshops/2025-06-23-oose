@@ -1,8 +1,10 @@
 import { Box, Container } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 
 import ReservationDetailCard from "../../components/ReservationDetailCard.tsx";
+import ReservationDetailPlaceholder from "../../components/ReservationDetailPlaceholder.tsx";
 import { getReservationByIdOpts } from "../../queries.ts";
 
 export default function ReservationRoute() {
@@ -20,7 +22,15 @@ export default function ReservationRoute() {
           justifyContent: "center",
         }}
       >
-        <ReservationDetailLoader reservationId={reservationId} />
+        {/*
+
+      Teil 1: Hier Suspense-Boundary, und Detail-Query langsam machen
+
+      */}
+
+        <Suspense fallback={<ReservationDetailPlaceholder />}>
+          <ReservationDetailLoader reservationId={reservationId} />
+        </Suspense>
       </Box>
     </Container>
   );

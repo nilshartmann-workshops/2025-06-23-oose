@@ -35,7 +35,7 @@ export const getReservationListOpts = (orderBy: OrderBy) =>
     // refetchInterval: 1000,
     async queryFn() {
       const reservations = await apiKy
-        .get(`reservations?orderBy=${orderBy}`)
+        .get(`reservations?orderBy=${orderBy}&slow=2000`)
         .json();
       return Reservation.array().parse(reservations);
     },
@@ -46,7 +46,9 @@ export const getReservationByIdOpts = (reservationId: string) =>
     // 🤔 warum sieht der Query Key so aus ('detail')?
     queryKey: ["reservations", "detail", reservationId],
     async queryFn() {
-      const result = await apiKy.get(`reservations/${reservationId}`).json();
+      const result = await apiKy
+        .get(`reservations/${reservationId}?slow=1200`)
+        .json();
       return Reservation.parse(result);
     },
   });

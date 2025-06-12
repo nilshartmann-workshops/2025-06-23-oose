@@ -1,9 +1,11 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import OrderButtonBar from "../../components/OrderButtonBar.tsx";
 import ReservationTable from "../../components/ReservationTable.tsx";
+import ReservationTablePlaceholder from "../../components/ReservationTablePlaceholder.tsx";
 import { getReservationListOpts } from "../../queries.ts";
 import { OrderBy } from "../../types.ts";
 
@@ -21,7 +23,21 @@ export default function ReservationListRoute() {
         <OrderButtonBar />
       </Box>
 
-      <ReservationsLoader />
+      {/*
+
+      Teil 2: Hier Suspense-Boundary und List-Query lahm machen
+
+      - 🤔 was passiert, wenn wir die Sortierung ändern?
+           - Suspense-Boundary erscheint nur, wenn die Daten noch NICHT im Cache sind
+           - ALTE Daten werden aber sofort angezeigt
+      - 🕵️‍♂️ Netzwerkverkehr: in jedem Fall wird ein Request im Hintergrund gemacht
+           - während ALTE Daten angezeigt sind
+           - mit isFetching können wir das prüfen
+
+      */}
+      <Suspense fallback={<ReservationTablePlaceholder />}>
+        <ReservationsLoader />
+      </Suspense>
     </>
   );
 }
@@ -33,13 +49,16 @@ function ReservationsLoader() {
   const orderBy = searchParams.get("orderBy") as OrderBy;
 
   // 🕵️‍♂️ Manuelles Aktualisieren der Liste
-  const { data: reservations, refetch } = useSuspenseQuery(
-    getReservationListOpts(orderBy),
-  );
+  const {
+    data: reservations,
+    refetch,
+    isFetching,
+  } = useSuspenseQuery(getReservationListOpts(orderBy));
 
   return (
     <Stack>
       <Button onClick={() => refetch()}>Reload</Button>
+      {isFetching && <Typography variant={"h3"}>Updating...</Typography>}
       <ReservationTable reservations={reservations} />
     </Stack>
   );
