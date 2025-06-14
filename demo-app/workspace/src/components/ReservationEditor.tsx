@@ -10,8 +10,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
 const ReservationFormState = z.object({
-  customerName: z.string().nonempty(),
-  expectedGuests: z.number().min(5),
+  customerName: z.string().nonempty({ error: "Please enter a customer name" }),
+  expectedGuests: z
+    .number()
+    .min(5, { error: "You have to invite at least 5 guests" }),
   specialRequests: z.string().nullish(),
 });
 type ReservationFormState = z.infer<typeof ReservationFormState>;
@@ -34,13 +36,23 @@ export default function ReservationEditor() {
     <form onSubmit={form.handleSubmit(handleSave, handleError)}>
       <Typography variant={"h3"}>Reserve your food trucks</Typography>
       <FormControl fullWidth margin="normal">
-        <TextField label="Customer" {...form.register("customerName")} />
+        <TextField
+          label="Customer"
+          {...form.register("customerName")}
+          error={!!form.formState.errors["customerName"]}
+          helperText={
+            form.formState.errors["customerName"]?.message ??
+            "Please fill in the customer's first and lastname"
+          }
+        />
       </FormControl>
 
       <FormControl fullWidth margin="normal">
         <TextField
           label="Special Requests"
           {...form.register("specialRequests")}
+          error={!!form.formState.errors["specialRequests"]?.message}
+          helperText={form.formState.errors["specialRequests"]?.message}
         />
       </FormControl>
       <FormControl fullWidth margin="normal">
@@ -48,12 +60,17 @@ export default function ReservationEditor() {
           label="Expected Guests"
           type={"number"}
           {...form.register("expectedGuests", { valueAsNumber: true })}
+          error={!!form.formState.errors["expectedGuests"]}
+          helperText={form.formState.errors["expectedGuests"]?.message}
         />
       </FormControl>
 
       <ButtonGroup variant="outlined" size={"large"} sx={{ marginTop: "2rem" }}>
         <Button variant={"contained"} type="submit">
           Request reservation
+        </Button>
+        <Button variant={"outlined"} type="button" onClick={() => form.reset()}>
+          Clear
         </Button>
       </ButtonGroup>
     </form>
