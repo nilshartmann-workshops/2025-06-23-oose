@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import _ky from "ky";
 
+import { NewReservation } from "./data.ts";
 import { OrderBy, Reservation } from "./types.ts";
 
 export const apiKy = _ky.extend({
@@ -85,6 +86,47 @@ export const useSetStatusMutation = (reservationId: string) => {
         //    -> wir wollen ALLE listen invalidieren
         queryKey: ["reservations", "list"],
       });
+    },
+  });
+};
+
+export const useCreateReservationMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    async mutationFn(newReservation: NewReservation) {
+      const result = await apiKy
+        .post(`reservations`, {
+          json: newReservation,
+          // hooks: {
+          //   beforeError: [
+          //     (error) => {
+          //       console.error(
+          //         "Saving reservation failed with error",
+          //         error.message,
+          //         error,
+          //       );
+          //       return error;
+          //     },
+          //   ],
+          // },
+        })
+        .json();
+      return Reservation.parse(result);
+    },
+    onSuccess(data: Reservation) {
+      // 🕵️‍♂️ müssen wir das Ding hier in den Cache setzen?
+      //    -> kann man diskutieren, in der App eher nicht notwendig
+      queryClient.setQueryData(getReservationByIdOpts(data.id).queryKey, data);
+      queryClient.invalidateQueries({
+        queryKey: ["reservations", "list"],
+      });
+    },
+    onError(error) {
+      console.error(
+        "Saving reservation failed with error",
+        error.message,
+        error,
+      );
     },
   });
 };

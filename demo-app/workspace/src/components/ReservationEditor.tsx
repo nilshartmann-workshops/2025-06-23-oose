@@ -13,7 +13,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
 import { calculatePrice, foodTrucks } from "../data.ts";
+import { useCreateReservationMutation } from "../queries.ts";
 import { TimeRange } from "../types.ts";
+import EditorSnackbar from "./EditorSnackbar.tsx";
 import FoodTruckSelect from "./FoodTruckSelect.tsx";
 
 const ReservationFormState = z.object({
@@ -22,7 +24,10 @@ const ReservationFormState = z.object({
   expectedGuests: z
     .number()
     .min(5, { error: "You have to invite at least 5 guests" }),
-  specialRequests: z.string().nullish(),
+  specialRequests: z
+    .string()
+    .nullish()
+    .transform((val) => (!val ? undefined : val)),
   timeRange: TimeRange.refine(
     (val) => {
       return dayjs(val.start).isBefore(val.end);
@@ -49,8 +54,26 @@ export default function ReservationEditor() {
   ]);
   const expectedPrice = calculatePrice(timeRange, expectedGuests);
 
-  const handleSave = (data: ReservationFormState) => {
+  const mutation = useCreateReservationMutation();
+
+  const handleSave = async (data: ReservationFormState) => {
     console.log("DATA", data);
+
+    try {
+      await mutation.mutateAsync(data);
+      form.reset();
+    } finally {
+      const unsubscribe = form.subscribe({
+        formState: {
+          values: true,
+        },
+        callback: (data) => {
+          console.log("Callback - data", data.values);
+          mutation.reset();
+          unsubscribe();
+        },
+      });
+    }
   };
 
   const handleError = (err: any) => {
@@ -193,6 +216,14 @@ export default function ReservationEditor() {
           Clear
         </Button>
       </ButtonGroup>
+      {mutation.isError && (
+        <EditorSnackbar severity={"error"}>
+          Could not save your reservation
+        </EditorSnackbar>
+      )}
+      {mutation.isSuccess && (
+        <EditorSnackbar severity={"success"}>Reservation saved</EditorSnackbar>
+      )}
     </form>
   );
 }
