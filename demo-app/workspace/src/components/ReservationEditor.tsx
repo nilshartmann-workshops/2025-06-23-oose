@@ -3,13 +3,17 @@ import {
   Button,
   ButtonGroup,
   FormControl,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material"; // <-- Achtung auf "/v4" achten!
+import { DateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
 import { foodTrucks } from "../data.ts";
+import { TimeRange } from "../types.ts";
 import FoodTruckSelect from "./FoodTruckSelect.tsx";
 
 const ReservationFormState = z.object({
@@ -19,6 +23,15 @@ const ReservationFormState = z.object({
     .number()
     .min(5, { error: "You have to invite at least 5 guests" }),
   specialRequests: z.string().nullish(),
+  timeRange: TimeRange.refine(
+    (val) => {
+      return dayjs(val.start).isBefore(val.end);
+    },
+    {
+      message: "end-date must be after before-date",
+      path: ["end"],
+    },
+  ),
 });
 type ReservationFormState = z.infer<typeof ReservationFormState>;
 
@@ -65,6 +78,58 @@ export default function ReservationEditor() {
           />
         )}
       />
+
+      <Stack direction="row" spacing={2} mt={4} mb={4}>
+        <FormControl fullWidth margin="normal">
+          <Controller
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <DateTimePicker
+                  slotProps={{
+                    textField: {
+                      error: !!form.formState.errors.timeRange?.start,
+                      helperText:
+                        form.formState.errors.timeRange?.start?.message,
+                    },
+                  }}
+                  label="Start"
+                  {...field}
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(v) => {
+                    field.onChange(v?.toISOString());
+                  }}
+                />
+              );
+            }}
+            name={"timeRange.start"}
+          />
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <Controller
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <DateTimePicker
+                  slotProps={{
+                    textField: {
+                      error: !!form.formState.errors.timeRange?.end,
+                      helperText: form.formState.errors.timeRange?.end?.message,
+                    },
+                  }}
+                  label="End"
+                  {...field}
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(v) => {
+                    field.onChange(v?.toISOString());
+                  }}
+                />
+              );
+            }}
+            name={"timeRange.end"}
+          />
+        </FormControl>
+      </Stack>
 
       <FormControl fullWidth margin="normal">
         <TextField
