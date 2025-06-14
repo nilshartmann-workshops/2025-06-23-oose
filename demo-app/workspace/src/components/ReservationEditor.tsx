@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
-import { foodTrucks } from "../data.ts";
+import { calculatePrice, foodTrucks } from "../data.ts";
 import { TimeRange } from "../types.ts";
 import FoodTruckSelect from "./FoodTruckSelect.tsx";
 
@@ -42,6 +42,12 @@ export default function ReservationEditor() {
       foodTruckId: "",
     },
   });
+
+  const [timeRange, expectedGuests] = form.watch([
+    "timeRange",
+    "expectedGuests",
+  ]);
+  const expectedPrice = calculatePrice(timeRange, expectedGuests);
 
   const handleSave = (data: ReservationFormState) => {
     console.log("DATA", data);
@@ -148,6 +154,10 @@ export default function ReservationEditor() {
           helperText={form.formState.errors["expectedGuests"]?.message}
         />
       </FormControl>
+
+      <Typography color="success.main" variant="body1">
+        Price (approx.) {expectedPrice}
+      </Typography>
 
       <ButtonGroup variant="outlined" size={"large"} sx={{ marginTop: "2rem" }}>
         <Button variant={"contained"} type="submit">
