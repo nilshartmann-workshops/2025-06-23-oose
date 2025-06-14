@@ -13,7 +13,7 @@ import { Link as RouterLink, Outlet, useSearchParams } from "react-router-dom";
 import TimezoneChooser from "./TimezoneChooser.tsx";
 
 // Auf true setzen, um den Link zum Reservation-Editor anzuzeigen
-const showCreateLink = false;
+const showCreateLink = true;
 
 export default function AppLayout() {
   const [searchParams] = useSearchParams();
