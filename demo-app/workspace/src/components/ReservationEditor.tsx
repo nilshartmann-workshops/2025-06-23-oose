@@ -6,11 +6,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material"; // <-- Achtung auf "/v4" achten!
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
+
+import { foodTrucks } from "../data.ts";
+import FoodTruckSelect from "./FoodTruckSelect.tsx";
 
 const ReservationFormState = z.object({
   customerName: z.string().nonempty({ error: "Please enter a customer name" }),
+  foodTruckId: z.string().nonempty("Please select your desired Food Truck"),
   expectedGuests: z
     .number()
     .min(5, { error: "You have to invite at least 5 guests" }),
@@ -21,7 +25,9 @@ type ReservationFormState = z.infer<typeof ReservationFormState>;
 export default function ReservationEditor() {
   const form = useForm({
     resolver: zodResolver(ReservationFormState),
-    defaultValues: {},
+    defaultValues: {
+      foodTruckId: "",
+    },
   });
 
   const handleSave = (data: ReservationFormState) => {
@@ -46,6 +52,19 @@ export default function ReservationEditor() {
           }
         />
       </FormControl>
+
+      <Controller
+        control={form.control}
+        name={"foodTruckId"}
+        render={(f) => (
+          <FoodTruckSelect
+            availableFoodTrucks={foodTrucks}
+            onSelectedFoodTruckIdChange={f.field.onChange}
+            selectedFoodTruckId={f.field.value}
+            errorMessage={f.fieldState.error?.message}
+          />
+        )}
+      />
 
       <FormControl fullWidth margin="normal">
         <TextField
