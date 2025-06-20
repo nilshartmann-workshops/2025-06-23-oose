@@ -4,6 +4,7 @@ import React, {
   useState,
   useTransition,
 } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { twMerge } from "tailwind-merge";
 
 import { incrementLikeOnServer } from "./increment-like-on-server.ts";
@@ -18,7 +19,15 @@ type LikesWidgetProps = {
 //  2. ErrorBoundary
 //  3. optimistic likes
 
-export default function LikesWidget({ initialLikes }: LikesWidgetProps) {
+export default function LikeWidgetWrapper({ initialLikes }: LikesWidgetProps) {
+  return (
+    <ErrorBoundary fallback={<h1>Fehler aufgetreten :-(</h1>}>
+      <LikesWidget initialLikes={initialLikes} />
+    </ErrorBoundary>
+  );
+}
+
+function LikesWidget({ initialLikes }: LikesWidgetProps) {
   const [likes, setLikes] = useState(initialLikes);
 
   // const [loading, setLoading] = useState(false);
