@@ -1,0 +1,36 @@
+import "./index.css";
+
+import { createRoot } from "react-dom/client";
+
+import App from "./components/App.tsx";
+
+const rootElement = document.getElementById("root");
+
+if (rootElement === null) {
+  throw new Error("Cannot find the root element");
+}
+
+// const queryClient = createQueryClient();
+//
+// const router = createRouter({
+//   routeTree,
+//   context: {
+//     queryClient,
+//   },
+// });
+//
+// // Register the router instance for type safety
+// declare module "@tanstack/react-router" {
+//   interface Register {
+//     router: typeof router;
+//   }
+// }
+//
+// createRoot(rootElement).render(
+//   <QueryClientProvider client={queryClient}>
+//     <RouterProvider router={router} />
+//     <ReactQueryDevtools />
+//   </QueryClientProvider>,
+// );
+
+createRoot(rootElement).render(<App />);
