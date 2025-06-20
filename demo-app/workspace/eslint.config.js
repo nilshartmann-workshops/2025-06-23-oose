@@ -20,7 +20,6 @@ const importRules = enableImportRules
       "import/no-duplicates": "error",
     }
   : {};
-
 export default tseslint.config(
   { ignores: ["dist"] },
   {
@@ -40,14 +39,12 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": [
-        "off",
+        "warn",
         { allowConstantExport: true },
       ],
-      "prefer-const": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/ban-types": "off",
       ...importRules,
     },
   },

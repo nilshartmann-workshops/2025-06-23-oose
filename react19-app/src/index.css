@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-red: #D54418;
+  --color-orange_2: #F89223;
+  --color-orange_2-200: #f6e3cf;
+  --color-orange_2-500: #E18521;
+
+  --color-green: #6FB43F;
+  --color-green-200: #9ccf77;
+
+  --color-lima-50: #f2f9ec;
+  --color-lima-100: #e3f2d5;
+  --color-lima-200: #c8e7af;
+  --color-lima-300: #a6d581;
+  --color-lima-400: #86c259;
+  --color-lima-500: #6fb43f;
+  --color-lima-600: #4f852b;
+  --color-lima-700: #3d6625;
+  --color-lima-800: #345222;
+  --color-lima-900: #2e4621;
+  --color-lima-950: #15260d;
+
+  --color-goldgray: #F4F3F0;
+
+  --breakpoint-sm: 767px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1200px;
+}
+
+@theme inline {
+  --font-space: "Space Grotesk", var(--font-sans);
+  --font-inter: "inter", var(--font-sans);
+  --font-barlow: "barlow", var(--font-sans);
+}

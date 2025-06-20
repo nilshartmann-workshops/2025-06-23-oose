@@ -1,0 +1,22 @@
+POST http://localhost:7200/api/reservations
+content-type: application/json
+
+{
+    "customerName": "Lara Müller",
+    "expectedGuests": 10,
+    "foodTruckId": "1",
+    "specialRequests": "Craft Beer",
+    "timeRange": {
+      "start": "2025-06-14T10:45:57.687Z",
+      "end": "2025-06-14T10:50:57.687Z"
+    }
+}
+
+###
+
+PUT http://localhost:7200/api/reservations/1/status
+content-type: application/json
+
+{
+  "status": "Confirmed"
+}
