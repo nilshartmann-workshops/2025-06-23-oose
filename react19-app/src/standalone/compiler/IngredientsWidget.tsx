@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { memo, ReactNode, useCallback, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { Ingredient } from "./ingredient-data.ts";
@@ -12,8 +12,16 @@ export default function IngredientsWidget({ ingredients }: IngredientsProps) {
   logRender("IngredientsWidget");
   const [servings, setServings] = useState(4);
 
-  const onDecreaseServings = () => setServings(servings - 1);
-  const onIncreaseServings = () => setServings(servings + 1);
+  // Hilft hier de-facto nicht
+  //   -> macht mehr Sinn, wenn in Compiler-App auch State ist
+  //   -> braucht im Live Coding nicht "richtig" gemacht zu werden, denn
+  //      das können die TN machen
+  //   -> und zum Schluss der Compiler
+  const onDecreaseServings = useCallback(
+    () => setServings(servings - 1),
+    [servings],
+  );
+  const onIncreaseServings = useCallback(() => setServings((s) => s + 1), []);
 
   useLogRenderDone();
 
@@ -100,7 +108,7 @@ type HeaderProps = {
   children: ReactNode;
 };
 
-function Header({ children }: HeaderProps) {
+const Header = memo(function Header({ children }: HeaderProps) {
   logRender("  Header");
   return (
     <span className={"flex items-center space-x-2 px-4"}>
@@ -108,7 +116,7 @@ function Header({ children }: HeaderProps) {
       <Heading>{children}</Heading>
     </span>
   );
-}
+});
 
 type HeadingProps = {
   children: ReactNode;
@@ -155,6 +163,8 @@ type IconButtonProps = {
   disabled?: boolean;
 };
 
+// Achtung! Hier besondere Situation:
+//   -> onButtonClick
 function IconButton({ disabled, icon, onButtonClick }: IconButtonProps) {
   logRender("    IconButton");
   return (
