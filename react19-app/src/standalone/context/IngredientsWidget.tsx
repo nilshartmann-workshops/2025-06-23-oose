@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useState } from "react";
+import React, { ReactNode, use, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { Ingredient } from "./ingredient-data.ts";
@@ -21,6 +21,8 @@ const USD = {
 
 const CurrencyContext = React.createContext<Currency>(EUR);
 //      ^--- Zwei Komponenten: Consumer und Provider
+//                               ^--- brauchen wir nicht
+//                                             ^-- ab React 19 nicht mehr
 
 type CurrencyProviderProps = {
   children: ReactNode;
@@ -28,8 +30,9 @@ type CurrencyProviderProps = {
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [currency, setCurrency] = useState<Currency>(EUR);
 
+  // Kein Provider!
   return (
-    <CurrencyContext.Provider value={currency}>
+    <CurrencyContext value={currency}>
       <div className={"flex space-x-4"}>
         <Button onClick={() => setCurrency(EUR)} selected={currency === EUR}>
           EUR
@@ -39,7 +42,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
         </Button>
       </div>
       {children}
-    </CurrencyContext.Provider>
+    </CurrencyContext>
   );
 }
 
@@ -170,7 +173,10 @@ function Price({ id, price }: PriceProps) {
 
   const [showPrices, setShowPrices] = useState(true);
 
-  const currency = useContext(CurrencyContext);
+  // ACHTUNG!
+  //   Renderzyklen mit consonle.log beobachten!
+  //   Devtools spinnen!
+  const currency = showPrices ? use(CurrencyContext) : null;
 
   return (
     <>
