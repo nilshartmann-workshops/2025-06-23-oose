@@ -14,6 +14,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import addReservationUpdateListener from "./components/add-reservation-update-listener.ts";
 import AppLayout from "./components/AppLayout.tsx";
 import { createQueryClient } from "./create-query-client.tsx";
 import CreateReservationRoute from "./routes/create/CreateReservationRoute.tsx";
@@ -34,6 +35,8 @@ const router = createBrowserRouter(
 );
 
 const queryClient = createQueryClient();
+
+addReservationUpdateListener(queryClient);
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
