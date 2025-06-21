@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 
+import { useTimezoneStore } from "../timezone-store.ts";
 import type { TimeRange } from "../types.ts";
 
 export function useDateFormatter() {
@@ -9,19 +10,19 @@ export function useDateFormatter() {
   //     beim Aktualisieren der Zeitzone entsprechend von dayjs
   //     neu berechnet und angezeigt werden
 
+  const timezone = useTimezoneStore((state) => state.timezone);
+
   return {
     shortTimeRange(range: TimeRange) {
       return `${dayjs(range.start)
-        .tz("Europe/Berlin")
+        .tz(timezone)
         .format(
           "DD.MM., HH:mm",
         )} - ${dayjs(range.end).format("DD.MM., HH:mm")}`;
     },
 
     longDateTime(dateTime: string) {
-      return `${dayjs(dateTime)
-        .tz("Europe/Berlin")
-        .format("DD. MMMM YYYY, HH:mm")}`;
+      return `${dayjs(dateTime).tz(timezone).format("DD. MMMM YYYY, HH:mm")}`;
     },
   };
 }

@@ -6,6 +6,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
 
+import { useTimezoneStore } from "../timezone-store.ts";
+
 const Timezones = [
   "America/Santiago",
   "Asia/Hong_Kong",
@@ -15,11 +17,9 @@ const Timezones = [
 
 export default function TimezoneChooser() {
   // todo: lies die Timezone aus dem globalen Zustand
-  const currentTimezone = "Europe/Berlin";
+  const currentTimezone = useTimezoneStore((s) => s.timezone);
 
-  const handleTimezoneChange = (newTimezone: string) => {
-    // todo: aktualisiere die Timezone im globalen Zustand
-  };
+  const handleTimezoneChange = useTimezoneStore((s) => s.setTimezone);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

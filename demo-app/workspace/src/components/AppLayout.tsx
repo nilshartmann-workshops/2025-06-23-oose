@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, Outlet, useSearchParams } from "react-router-dom";
 
+import TimezoneChooser from "./TimezoneChooser.tsx";
+
 // Auf true setzen, um den Link zum Reservation-Editor anzuzeigen
 const showCreateLink = false;
 
@@ -38,6 +40,8 @@ export default function AppLayout() {
                   </Stack>
                 </Button>
               </Typography>
+
+              {showCreateLink && <TimezoneChooser />}
 
               {showCreateLink && (
                 <Button color="inherit" component={RouterLink} to={"/create"}>
