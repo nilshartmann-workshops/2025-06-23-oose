@@ -9,10 +9,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
 
 import { Reservation } from "../types.ts";
 import ReservationDetailDialog from "./ReservationDetailDialog.tsx";
+import { RouterLink } from "./RouterLink.tsx";
 import StatusChip from "./StatusChip.tsx";
 import TimeRangeChip from "./TimeRangeChip.tsx";
 
@@ -22,7 +22,6 @@ type ReservationTableProps = {
 export default function ReservationTable({
   reservations,
 }: ReservationTableProps) {
-  const [searchParams] = useSearchParams();
   const [selectedReservationId, setSelectedReservationId] = useState<
     string | null
   >(null);
@@ -64,8 +63,11 @@ export default function ReservationTable({
               </TableCell>
               <TableCell>
                 <Button
-                  to={`/reservations/${r.id}?${searchParams.toString()}`}
-                  component={Link}
+                  to={"/$reservationId"}
+                  component={RouterLink}
+                  params={{
+                    reservationId: r.id,
+                  }}
                 >
                   Edit
                 </Button>

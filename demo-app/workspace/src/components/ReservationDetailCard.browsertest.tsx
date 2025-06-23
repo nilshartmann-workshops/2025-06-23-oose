@@ -8,7 +8,7 @@ import { render } from "vitest-browser-react";
 
 import { createQueryClient } from "../create-query-client.tsx";
 import { createDummyReservation } from "../data.ts";
-import { ReservationDetailLoader } from "../routes/reservation/ReservationRoute.tsx";
+import { ReservationDetailLoader } from "../routes/$reservationId";
 import { ReservationStatus } from "../types.ts";
 
 // identische Handler wie im Unit-Test

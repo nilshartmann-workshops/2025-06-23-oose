@@ -6,33 +6,23 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
 
 import addReservationUpdateListener from "./components/add-reservation-update-listener.ts";
-import AppLayout from "./components/AppLayout.tsx";
 import { createQueryClient } from "./create-query-client.tsx";
-import CreateReservationRoute from "./routes/create/CreateReservationRoute.tsx";
-import ReservationRoute from "./routes/reservation/ReservationRoute.tsx";
-import ReservationListRoute from "./routes/reservationlist/ReservationListRoute.tsx";
+// Import the generated route tree
+import { routeTree } from "./routeTree.gen";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path={"/"} element={<AppLayout />}>
-      <Route index element={<ReservationListRoute />} />
-      <Route
-        path="reservations/:reservationId"
-        element={<ReservationRoute />}
-      />
-      <Route path="create" element={<CreateReservationRoute />} />
-    </Route>,
-  ),
-);
+// Create a new router instance
+const router = createRouter({ routeTree });
+
+// Register the router instance for type safety
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 const queryClient = createQueryClient();
 

@@ -8,15 +8,15 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink, Outlet, useSearchParams } from "react-router-dom";
+import { Outlet } from "@tanstack/react-router";
 
+import { RouterLink } from "./RouterLink.tsx";
 import TimezoneChooser from "./TimezoneChooser.tsx";
 
 // Auf true setzen, um den Link zum Reservation-Editor anzuzeigen
 const showCreateLink = true;
 
 export default function AppLayout() {
-  const [searchParams] = useSearchParams();
   return (
     <Container>
       <Stack spacing={4}>
@@ -29,11 +29,7 @@ export default function AppLayout() {
                 sx={{ flexGrow: 1 }}
                 align={"left"}
               >
-                <Button
-                  color="inherit"
-                  component={RouterLink}
-                  to={`/?${searchParams.toString()}`}
-                >
+                <Button color="inherit" component={RouterLink} to={`/`}>
                   <Stack direction="row" spacing={2} alignItems={"center"}>
                     <Avatar src={"/icon.png"} />
                     <div>Rent a Food Truck</div>

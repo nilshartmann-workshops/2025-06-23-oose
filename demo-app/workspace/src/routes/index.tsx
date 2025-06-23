@@ -1,13 +1,16 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { useSearchParams } from "react-router-dom";
 
-import OrderButtonBar from "../../components/OrderButtonBar.tsx";
-import ReservationTable from "../../components/ReservationTable.tsx";
-import ReservationTablePlaceholder from "../../components/ReservationTablePlaceholder.tsx";
-import { getReservationListOpts } from "../../queries.ts";
-import { OrderBy } from "../../types.ts";
+import OrderButtonBar from "../components/OrderButtonBar.tsx";
+import ReservationTable from "../components/ReservationTable.tsx";
+import ReservationTablePlaceholder from "../components/ReservationTablePlaceholder.tsx";
+import { getReservationListOpts } from "../queries.ts";
+
+export const Route = createFileRoute("/")({
+  component: ReservationListRoute,
+});
 
 export default function ReservationListRoute() {
   return (
@@ -43,10 +46,7 @@ export default function ReservationListRoute() {
 }
 
 function ReservationsLoader() {
-  const [searchParams] = useSearchParams({ orderBy: "start" });
-  // Macht hier eine Laufzeit Validierung Sinn?
-  //  können wir auch später bei Zod besprechen
-  const orderBy = searchParams.get("orderBy") as OrderBy;
+  const orderBy = Route.useSearch({ select: (s) => s.orderBy });
 
   // 🕵️‍♂️ Manuelles Aktualisieren der Liste
   const {

@@ -9,7 +9,7 @@ import { afterAll, afterEach, beforeAll, expect, test } from "vitest";
 
 import { createQueryClient } from "../create-query-client.tsx";
 import { createDummyReservation } from "../data.ts";
-import { ReservationDetailLoader } from "../routes/reservation/ReservationRoute.tsx";
+import { ReservationDetailLoader } from "../routes/$reservationId";
 import { ReservationStatus } from "../types.ts";
 
 // In realistischen Test-Cases:

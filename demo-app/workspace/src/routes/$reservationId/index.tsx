@@ -10,16 +10,20 @@ import {
   useQueryErrorResetBoundary,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
-import { useParams } from "react-router-dom";
 
 import ReservationDetailCard from "../../components/ReservationDetailCard.tsx";
 import ReservationDetailPlaceholder from "../../components/ReservationDetailPlaceholder.tsx";
 import { getReservationByIdOpts } from "../../queries.ts";
 
+export const Route = createFileRoute("/$reservationId/")({
+  component: ReservationRoute,
+});
+
 export default function ReservationRoute() {
-  const { reservationId } = useParams();
+  const { reservationId } = Route.useParams();
 
   if (!reservationId) {
     throw new Error("Invalid reservationId");

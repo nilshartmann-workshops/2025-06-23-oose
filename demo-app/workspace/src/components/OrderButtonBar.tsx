@@ -1,22 +1,26 @@
-import { Box, Button, ButtonGroup, type ButtonProps } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
+import { Box, Button, ButtonGroup, ButtonProps } from "@mui/material";
+import { getRouteApi, Link } from "@tanstack/react-router";
 
 import type { OrderBy } from "../types.ts";
+import { RouterLink } from "./RouterLink.tsx";
+
+const Route = getRouteApi("/");
 
 export default function OrderButtonBar() {
-  const [searchParams] = useSearchParams({ orderBy: "start" });
-  const currentOrderBy = searchParams.get("orderBy");
+  const currentOrderBy = Route.useSearch({
+    select: (params) => params.orderBy,
+  });
+  // const [searchParams] = useSearchParams({ orderBy: "start" });
+  // const currentOrderBy = searchParams.get("orderBy");
 
   const buttonProps = (
     orderBy: OrderBy,
     label: string,
-  ): ButtonProps<typeof Link> => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("orderBy", orderBy);
-    const to = `/?${newSearchParams.toString()}`;
+  ): ButtonProps<typeof RouterLink> => {
     return {
-      component: Link,
-      to,
+      component: RouterLink,
+      to: "/",
+      search: (currentSearch) => ({ ...currentSearch, orderBy }),
       children: label,
       variant: orderBy === currentOrderBy ? "contained" : "outlined",
     };
