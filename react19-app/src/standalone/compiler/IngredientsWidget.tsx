@@ -1,4 +1,4 @@
-import { memo, ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { Ingredient } from "./ingredient-data.ts";
@@ -17,24 +17,29 @@ export default function IngredientsWidget({ ingredients }: IngredientsProps) {
   //   return { documentTitle: "Huhu" };
   // }, []);
 
-  const onDecreaseServings = useCallback(
-    () => setServings(servings - 1),
-    [servings], // Dependency Array
-  );
-  const onIncreaseServings = useCallback(
-    () => setServings((currentState) => currentState + 1),
-    [],
-  );
+  const onDecreaseServings = () => setServings(servings - 1);
+  const onIncreaseServings = () => setServings((s) => s + 1);
+
+  const handler = () => {
+    // asynchron sicher!
+    setTimeout(() => setServings((currentState) => currentState + 1), 7000);
+
+    setServings((currentState) => {
+      console.log(currentState);
+
+      return currentState;
+    });
+  };
 
   useEffect(() => {
     console.log("EFFECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     window.document.title = config.documentTitle;
   }, [config]);
 
-  useEffect(() => {
-    console.log("EFFECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    window.document.title = config.documentTitle;
-  }, [config.documentTitle]);
+  // useEffect(() => {
+  //   console.log("EFFECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  //   window.document.title = config.documentTitle;
+  // }, [config.documentTitle]);
 
   useLogRenderDone();
 
@@ -124,7 +129,7 @@ type HeaderProps = {
   config: any;
 };
 // memo
-const Header = memo(function Header({ children, config }: HeaderProps) {
+function Header({ children, config }: HeaderProps) {
   console.log("config", config);
   logRender("  Header");
   return (
@@ -133,7 +138,7 @@ const Header = memo(function Header({ children, config }: HeaderProps) {
       <Heading>{children}</Heading>
     </span>
   );
-});
+}
 
 type HeadingProps = {
   children: ReactNode;
@@ -180,11 +185,7 @@ type IconButtonProps = {
   disabled?: boolean;
 };
 
-const IconButton = memo(function IconButton({
-  disabled,
-  icon,
-  onButtonClick,
-}: IconButtonProps) {
+function IconButton({ disabled, icon, onButtonClick }: IconButtonProps) {
   logRender("    IconButton");
   return (
     <button onClick={disabled ? undefined : onButtonClick}>
@@ -197,4 +198,4 @@ const IconButton = memo(function IconButton({
       />
     </button>
   );
-});
+}
