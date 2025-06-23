@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { memo, ReactNode, useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { Ingredient } from "./ingredient-data.ts";
@@ -10,17 +10,40 @@ type IngredientsProps = {
 };
 export default function IngredientsWidget({ ingredients }: IngredientsProps) {
   logRender("IngredientsWidget");
+  const [counter, setCounter] = useState(0);
   const [servings, setServings] = useState(4);
+  const config = { documentTitle: "Huhu" };
+  // const config = useMemo(() => {
+  //   return { documentTitle: "Huhu" };
+  // }, []);
 
-  const onDecreaseServings = () => setServings(servings - 1);
-  const onIncreaseServings = () => setServings(servings + 1);
+  const onDecreaseServings = useCallback(
+    () => setServings(servings - 1),
+    [servings], // Dependency Array
+  );
+  const onIncreaseServings = useCallback(
+    () => setServings((currentState) => currentState + 1),
+    [],
+  );
+
+  useEffect(() => {
+    console.log("EFFECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    window.document.title = config.documentTitle;
+  }, [config]);
+
+  useEffect(() => {
+    console.log("EFFECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    window.document.title = config.documentTitle;
+  }, [config.documentTitle]);
 
   useLogRenderDone();
 
   return (
     <>
       <div className={"flex items-center justify-between"}>
-        <Header>Ingredients</Header>
+        <Header config={config}>Ingredients</Header>
+        <button onClick={() => setCounter(counter + 1)}>{counter}</button>
+
         <ServingsChooser
           servings={servings}
           onMinusClick={onDecreaseServings}
@@ -98,9 +121,11 @@ function IngredientItem({ ingredient, servings }: IngredientItemProps) {
 
 type HeaderProps = {
   children: ReactNode;
+  config: any;
 };
-
-function Header({ children }: HeaderProps) {
+// memo
+const Header = memo(function Header({ children, config }: HeaderProps) {
+  console.log("config", config);
   logRender("  Header");
   return (
     <span className={"flex items-center space-x-2 px-4"}>
@@ -108,7 +133,7 @@ function Header({ children }: HeaderProps) {
       <Heading>{children}</Heading>
     </span>
   );
-}
+});
 
 type HeadingProps = {
   children: ReactNode;
@@ -155,7 +180,11 @@ type IconButtonProps = {
   disabled?: boolean;
 };
 
-function IconButton({ disabled, icon, onButtonClick }: IconButtonProps) {
+const IconButton = memo(function IconButton({
+  disabled,
+  icon,
+  onButtonClick,
+}: IconButtonProps) {
   logRender("    IconButton");
   return (
     <button onClick={disabled ? undefined : onButtonClick}>
@@ -168,4 +197,4 @@ function IconButton({ disabled, icon, onButtonClick }: IconButtonProps) {
       />
     </button>
   );
-}
+});
