@@ -9,7 +9,9 @@ export async function incrementLikeOnServer() {
   if (likes > 5) {
     throw new Error("Too many likes");
   }
-  likes = await longRunningOperation(likes + 1, 2000);
+  console.log("SERVER", likes);
+  likes++;
+  const x = await longRunningOperation(likes + 1, 200);
   return likes;
 }
 

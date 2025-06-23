@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-const enableCompiler = true;
+const enableCompiler = false;
 
 const babelConfig = enableCompiler
   ? { babel: { plugins: ["babel-plugin-react-compiler", {}] } }
