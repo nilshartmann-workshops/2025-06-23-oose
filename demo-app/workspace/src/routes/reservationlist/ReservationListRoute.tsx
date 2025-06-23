@@ -1,9 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import ky from "ky";
+import { useSearchParams } from "react-router-dom";
 
+import OrderButtonBar from "../../components/OrderButtonBar.tsx";
 import ReservationTable from "../../components/ReservationTable.tsx";
-import { Reservation } from "../../types.ts";
+import { getReservationListOptions } from "../../queries.ts";
+import { OrderBy } from "../../types.ts";
 
 export default function ReservationListRoute() {
   return (
@@ -16,26 +18,24 @@ export default function ReservationListRoute() {
         <Typography variant={"h3"} align={"left"}>
           Reservations
         </Typography>
-      </Box>
 
-      <ReservationsLoader />
+        <OrderButtonBar />
+      </Box>
+      <ReservationsLoader />;
     </>
   );
 }
 
 function ReservationsLoader() {
+  const [searchParams] = useSearchParams({ orderBy: "start" });
+  const orderBy = searchParams.get("orderBy") as OrderBy;
+
   // TanStack Query
 
   // queryKey: ["reservations", "details", "R-1" ]
-  const { data: reservations } = useSuspenseQuery({
-    queryKey: ["reservations", "list"],
-    async queryFn() {
-      const result = await ky
-        .get<Reservation[]>("http://localhost:7200/api/reservations")
-        .json();
-      return result;
-    },
-  });
+  const { data: reservations } = useSuspenseQuery(
+    getReservationListOptions(orderBy),
+  );
 
   return <ReservationTable reservations={reservations} />;
 
