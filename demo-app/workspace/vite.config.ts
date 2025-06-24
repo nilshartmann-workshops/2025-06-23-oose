@@ -10,6 +10,7 @@ export default defineConfig({
         test: {
           name: "unit",
           include: ["src/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
+          includeTaskLocation: true,
           setupFiles: ["./vitest.setup.ts"],
           environment: "jsdom",
         },
@@ -19,6 +20,7 @@ export default defineConfig({
         test: {
           name: "browser",
           include: ["src/**/*.{browsertest,spec}.?(c|m)[jt]s?(x)"],
+          includeTaskLocation: true,
           browser: {
             enabled: true,
             provider: "playwright",
