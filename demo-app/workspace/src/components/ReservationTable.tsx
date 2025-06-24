@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
+import { useTimezoneStore } from "../timezone-store.ts";
 import { Reservation } from "../types.ts";
 import ReservationDetailDialog from "./ReservationDetailDialog.tsx";
 import StatusChip from "./StatusChip.tsx";
@@ -22,6 +23,7 @@ type ReservationTableProps = {
 export default function ReservationTable({
   reservations,
 }: ReservationTableProps) {
+  const timezone = useTimezoneStore();
   const [searchParams] = useSearchParams();
   const [selectedReservationId, setSelectedReservationId] = useState<
     string | null
@@ -34,7 +36,7 @@ export default function ReservationTable({
           <TableRow>
             <TableCell>Food Truck</TableCell>
             <TableCell>Customer</TableCell>
-            <TableCell>Time</TableCell>
+            <TableCell>Time ({timezone.timezone})</TableCell>
             <TableCell>Guests</TableCell>
             <TableCell>Specials</TableCell>
             <TableCell>Status</TableCell>

@@ -15,6 +15,7 @@ import { z } from "zod/v4";
 
 import { getReservationByIdOpts } from "../queries.ts";
 import { ReservationStatus } from "../types.ts";
+import TimezoneChooser from "./TimezoneChooser.tsx";
 
 // Auf true setzen, um den Link zum Reservation-Editor anzuzeigen
 const showCreateLink = false;
@@ -76,6 +77,8 @@ export default function AppLayout() {
                   </Stack>
                 </Button>
               </Typography>
+
+              <TimezoneChooser />
 
               {showCreateLink && (
                 <Button color="inherit" component={RouterLink} to={"/create"}>
