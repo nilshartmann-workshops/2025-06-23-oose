@@ -12,11 +12,7 @@ export function getReservationListOptions(orderBy: OrderBy) {
     queryKey: ["reservations", "list", { orderBy }],
     async queryFn() {
       const result = await ky
-        .get(
-          "http://localhost:7200/api/reservations?orderBy=" +
-            orderBy +
-            "&slow=2400",
-        )
+        .get("http://localhost:7200/api/reservations?orderBy=" + orderBy)
         .json();
 
       const reservations = Reservation.array().parse(result);
@@ -32,9 +28,7 @@ export const getReservationByIdOpts = (reservationId: string) =>
     queryKey: ["reservations", "detail", reservationId],
     async queryFn() {
       const result = await ky
-        .get(
-          `http://localhost:7200/api/reservations/${reservationId}?slow=2400`,
-        )
+        .get(`http://localhost:7200/api/reservations/${reservationId}`)
         .json();
       const reservation = Reservation.parse(result);
       return reservation;

@@ -10,11 +10,9 @@ export function setupReservationApi(app) {
     const allowedOrderBy = ["foodTruck", "customerName", "status", "start"];
 
     if (!allowedOrderBy.includes(orderBy)) {
-      return res
-        .status(400)
-        .json({
-          error: `Invalid 'orderBy' search param '${orderBy}' Allowed values: '${allowedOrderBy}'`,
-        });
+      return res.status(400).json({
+        error: `Invalid 'orderBy' search param '${orderBy}' Allowed values: '${allowedOrderBy}'`,
+      });
     }
     return res.status(200).json(sortReservations(reservations, orderBy));
   });
@@ -25,7 +23,7 @@ export function setupReservationApi(app) {
     "timeRange",
     "expectedGuests",
     "specialRequests",
-  ]
+  ];
 
   app.post("/api/reservations", (req, res) => {
     const errors = [];
@@ -38,13 +36,14 @@ export function setupReservationApi(app) {
       specialRequests,
     } = req.body || {};
 
-    const invalidProperties = Object
-      .keys(req.body || {})
-      .filter(key => !allowedProperties.includes(key));
+    const invalidProperties = Object.keys(req.body || {}).filter(
+      (key) => !allowedProperties.includes(key),
+    );
     if (invalidProperties.length) {
-      errors.push({"error": `Invalid properties in payload: '${invalidProperties}'. Only properties '${allowedProperties}' allowed`})
+      errors.push({
+        error: `Invalid properties in payload: '${invalidProperties}'. Only properties '${allowedProperties}' allowed`,
+      });
     }
-
 
     if (!foodTruckId) {
       errors.push({ error: "'foodTruckId' must be specified" });
@@ -54,8 +53,7 @@ export function setupReservationApi(app) {
 
     if (!foodTruck) {
       errors.push({
-        error:
-          `Given 'foodTruckId' with value '${foodTruckId}' does not exists. Valid foodTruckIds: ${foodtrucks.map((f) => `'${f.id}'`).join(", ")}`
+        error: `Given 'foodTruckId' with value '${foodTruckId}' does not exists. Valid foodTruckIds: ${foodtrucks.map((f) => `'${f.id}'`).join(", ")}`,
       });
     }
 
@@ -96,12 +94,17 @@ export function setupReservationApi(app) {
       }
 
       if (expectedGuests > 200) {
-        errors.push({ error: "'expectedGuests' must be equal or less than 200" });
+        errors.push({
+          error: "'expectedGuests' must be equal or less than 200",
+        });
       }
     }
 
-    if (typeof specialRequests === "string" && specialRequests.length===0) {
-      errors.push({ error: "'specialRequests' must either be a non empty string or undefined" });
+    if (typeof specialRequests === "string" && specialRequests.length === 0) {
+      errors.push({
+        error:
+          "'specialRequests' must either be a non empty string or undefined",
+      });
     }
 
     if (errors.length) {
@@ -128,11 +131,9 @@ export function setupReservationApi(app) {
       (d) => d.id === req.params.reservationId,
     );
     if (!reservation) {
-      return res
-        .status(404)
-        .json({
-          error: `Reservation not found with id '${req.params.reservationId}'`,
-        });
+      return res.status(404).json({
+        error: `Reservation not found with id '${req.params.reservationId}'`,
+      });
     }
 
     return res.status(200).json(reservation);
@@ -143,21 +144,17 @@ export function setupReservationApi(app) {
       (d) => d.id === req.params.reservationId,
     );
     if (!reservation) {
-      return res
-        .status(404)
-        .json({
-          error: `Reservation not found with id '${req.params.reservationId}'`,
-        });
+      return res.status(404).json({
+        error: `Reservation not found with id '${req.params.reservationId}'`,
+      });
     }
 
     const newStatus = req.body?.status;
 
     if (newStatus !== "Rejected" && newStatus !== "Confirmed") {
-      return res
-        .status(400)
-        .json({
-          error: `Invalid Status ${newStatus}. Please use 'Rejected' or 'Confirmed'`,
-        });
+      return res.status(400).json({
+        error: `Invalid Status ${newStatus}. Please use 'Rejected' or 'Confirmed'`,
+      });
     }
 
     reservation.status = newStatus;
@@ -191,15 +188,24 @@ export function setupReservationApi(app) {
   });
 }
 
+/*
+event: temperature
+data: {"temp": "39°C"}
+
+event: wind
+data: {"speed": "32kmh"}
+
+*/
+
 function notifyClients(reservationId, newStatus) {
   connectedClients.forEach((client) => {
     const data = JSON.stringify({
       reservationId,
-      newStatus
-    })
+      newStatus,
+    });
 
-    client.write(`event: reservation-status-changed\n`)
-    client.write(`data: ${data}\n`)
+    client.write(`event: reservation-status-changed\n`);
+    client.write(`data: ${data}\n`);
     client.write(`\n`);
   });
 }

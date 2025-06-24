@@ -45,7 +45,7 @@ export type TimeRange = z.infer<typeof TimeRange>;
 //   specialRequests?: string;
 //   status: ReservationStatus;
 // };
-const ReservationStatus = z.enum(["Requested", "Confirmed", "Rejected"]);
+export const ReservationStatus = z.enum(["Requested", "Confirmed", "Rejected"]);
 export type ReservationStatus = z.infer<typeof ReservationStatus>;
 
 export const Reservation = z.object({
