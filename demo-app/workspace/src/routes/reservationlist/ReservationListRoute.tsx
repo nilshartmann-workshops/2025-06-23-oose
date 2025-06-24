@@ -1,9 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import OrderButtonBar from "../../components/OrderButtonBar.tsx";
 import ReservationTable from "../../components/ReservationTable.tsx";
+import ReservationTablePlaceholder from "../../components/ReservationTablePlaceholder.tsx";
 import { getReservationListOptions } from "../../queries.ts";
 import { OrderBy } from "../../types.ts";
 
@@ -21,7 +23,10 @@ export default function ReservationListRoute() {
 
         <OrderButtonBar />
       </Box>
-      <ReservationsLoader />;
+
+      <Suspense fallback={<ReservationTablePlaceholder />}>
+        <ReservationsLoader />;
+      </Suspense>
     </>
   );
 }
@@ -33,11 +38,18 @@ function ReservationsLoader() {
   // TanStack Query
 
   // queryKey: ["reservations", "details", "R-1" ]
-  const { data: reservations } = useSuspenseQuery(
+  const { data: reservations, isFetching } = useSuspenseQuery(
     getReservationListOptions(orderBy),
   );
 
-  return <ReservationTable reservations={reservations} />;
+  // ....
+
+  return (
+    <div>
+      {isFetching && <p>Daten werden aktualisiert!</p>}
+      <ReservationTable reservations={reservations} />
+    </div>
+  );
 
   // ...
 }

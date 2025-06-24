@@ -23,7 +23,11 @@ import ReservationListRoute from "./routes/reservationlist/ReservationListRoute.
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path={"/"} element={<AppLayout />}>
-      <Route index element={<ReservationListRoute />} />
+      <Route
+        index
+        element={<ReservationListRoute />}
+        // loader={() => queryClient.ensureQueryData(["device", "4711"])}
+      />
       <Route
         path="reservations/:reservationId"
         element={<ReservationRoute />}
