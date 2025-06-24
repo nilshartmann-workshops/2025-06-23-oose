@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:unit": "vitest --project unit",
+    "test:browser": "vitest --project browser"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -45,6 +47,7 @@
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.1",
+    "@vitest/browser": "^3.2.4",
     "eslint": "^9.28.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -54,11 +57,17 @@
     "globals": "^16.2.0",
     "jsdom": "^26.1.0",
     "msw": "^2.10.2",
+    "playwright": "^1.53.1",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.1",
     "vite": "^6.3.5",
-    "vitest": "^3.2.2"
+    "vitest": "^3.2.2",
+    "vitest-browser-react": "^1.0.0"
   },
-  "packageManager": "pnpm@10.3.0+sha512.ee592eda8815a8a293c206bb0917c4bb0ff274c50def7cbc17be05ec641fc2d1b02490ce660061356bd0d126a4d7eb2ec8830e6959fb8a447571c631d5a2442d"
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }
