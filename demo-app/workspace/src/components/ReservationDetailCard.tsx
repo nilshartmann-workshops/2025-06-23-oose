@@ -58,14 +58,14 @@ export default function ReservationDetailCard({
           <Button
             onClick={() => mutation.mutate("Confirmed")}
             variant="text"
-            disabled={reservation.status === "Confirmed"}
+            disabled={reservation.status === "Confirmed" || mutation.isPending}
           >
             Confirm
           </Button>
           <Button
             onClick={() => mutation.mutate("Rejected")}
             variant="text"
-            disabled={reservation.status === "Rejected"}
+            disabled={reservation.status === "Rejected" || mutation.isPending}
           >
             Reject
           </Button>
