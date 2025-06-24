@@ -8,6 +8,7 @@ import ReactDOM from "react-dom/client";
 
 // import App from "./standalone/compiler/CompilerApp.tsx";
 import App from "./standalone/transition/TransitionApp.tsx";
+import DndApp from "./standalone/dnd/DndApp.tsx";
 // import App from "./standalone/transition/TransitionApp.tsx";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+// scan();
+ReactDOM.createRoot(document.getElementById("root")!).render(<DndApp />);

@@ -49,6 +49,7 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/ban-types": "off",
       ...importRules,
+      "react-hooks/react-compiler": "error",
     },
   },
 );
