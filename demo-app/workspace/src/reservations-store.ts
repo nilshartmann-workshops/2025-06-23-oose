@@ -53,4 +53,34 @@ export const useReservationsStore = create<ReservationsState>()((set, get) => ({
   },
 }));
 
+const temperatureEvent = { degree: 30, unit: "Celsius" };
+const windEvent = { speed: 25 };
+
+// class TemperateEvent {
+//   degree = 20
+// }
+// class WindEvent {}
+
+type TemperatureEvent = {
+  type: "temperature_change";
+  degree: number;
+  unit: string;
+};
+type WindEvent = { type: "wind_change"; speed: number };
+
+// if (x instanceof String s) { s.toLowerCase(); }
+
+function readEventFromSocket(data: any) {}
+// Tagged Union
+function handleEvent(e: TemperatureEvent | WindEvent) {
+  if (e.type === "wind_change") {
+    e.speed;
+  }
+
+  if ("degree" in e) {
+    return writeTemperatue(e);
+  }
+}
+
+function writeTemperatue(e: TemperatureEvent) {}
 //
