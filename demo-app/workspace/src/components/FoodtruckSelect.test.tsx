@@ -17,6 +17,11 @@ test("FoodtruckSelect soll funktionieren!!!", async () => {
     />,
   );
 
+  // Dom anzeigen:
+  // screen.debug();
+
+  screen.logTestingPlaygroundURL();
+
   // screen.getByText(/burger beast/i);
   expect(screen.getByText(/burger beast/i)).toBeInTheDocument();
   expect(screen.queryByText(/pizza palace/i)).not.toBeInTheDocument();

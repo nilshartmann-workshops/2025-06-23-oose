@@ -31,7 +31,7 @@ type ReservationDetailLoaderProps = {
   reservationId: string;
 };
 
-function ReservationDetailLoader({
+export function ReservationDetailLoader({
   reservationId,
 }: ReservationDetailLoaderProps) {
   const { data: reservation } = useSuspenseQuery(
