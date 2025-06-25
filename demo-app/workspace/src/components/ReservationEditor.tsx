@@ -1,9 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, ButtonGroup, FormControl, TextField } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  FormControl,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 
-import { foodTrucks } from "../data.ts";
+import { calculatePrice, foodTrucks } from "../data.ts";
+import { TimeRange } from "../types.ts";
 import FoodTruckSelect from "./FoodTruckSelect.tsx";
 
 // Pattern "Render" Property
@@ -30,6 +40,15 @@ const ReservationFormState = z.object({
     .number("Bitte geben Sie die Anzahl der Gäste als Zahl ein")
     .min(5, "Sie müssen mindestens fünf Gäste angeben"),
   specialRequests: z.string().nullish(),
+  timeRange: TimeRange.refine(
+    (val) => {
+      return dayjs(val.start).isBefore(val.end);
+    },
+    {
+      message: "end-date must be after before-date",
+      path: ["end"],
+    },
+  ),
 });
 type IReservationFormState = z.infer<typeof ReservationFormState>;
 
@@ -45,11 +64,18 @@ export default function ReserverationEditor() {
 
   const handleSave = (data: IReservationFormState) => {
     console.log("DATA", data);
+
+    // ...
   };
 
   const handleError = (err: any) => {
     console.log("ERROR", err);
   };
+
+  const [expectedGuests, timeRange] = form.watch([
+    "expectedGuests",
+    "timeRange",
+  ]);
 
   return (
     <form onSubmit={form.handleSubmit(handleSave, handleError)}>
@@ -80,6 +106,56 @@ export default function ReserverationEditor() {
         )}
       />
 
+      <Stack direction="row" spacing={2} mt={4} mb={4}>
+        <FormControl fullWidth margin="normal">
+          <Controller
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <DateTimePicker
+                  slotProps={{
+                    textField: {
+                      error: !!form.formState.errors.timeRange?.start,
+                      helperText:
+                        form.formState.errors.timeRange?.start?.message,
+                    },
+                  }}
+                  label="Start"
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(v) => {
+                    field.onChange(v?.toISOString());
+                  }}
+                />
+              );
+            }}
+            name={"timeRange.start"}
+          />
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <Controller
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <DateTimePicker
+                  slotProps={{
+                    textField: {
+                      error: !!form.formState.errors.timeRange?.end,
+                      helperText: form.formState.errors.timeRange?.end?.message,
+                    },
+                  }}
+                  label="End"
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(v) => {
+                    field.onChange(v?.toISOString());
+                  }}
+                />
+              );
+            }}
+            name={"timeRange.end"}
+          />
+        </FormControl>
+      </Stack>
+
       <FormControl fullWidth margin="normal">
         <TextField
           label="Special Requests"
@@ -96,6 +172,27 @@ export default function ReserverationEditor() {
           helperText={form.formState.errors.expectedGuests?.message}
         />
       </FormControl>
+
+      <Typography color="success.main" variant="body1">
+        Price (approx.) {calculatePrice(timeRange, expectedGuests)}
+      </Typography>
+
+      <ButtonGroup>
+        <Button
+          onClick={() => {
+            form.setValue("expectedGuests", 100);
+          }}
+        >
+          100
+        </Button>
+        <Button
+          onClick={() => {
+            form.setValue("expectedGuests", 200);
+          }}
+        >
+          200
+        </Button>
+      </ButtonGroup>
 
       <ButtonGroup variant="outlined" size={"large"} sx={{ marginTop: "2rem" }}>
         <Button variant={"contained"} type="submit">
