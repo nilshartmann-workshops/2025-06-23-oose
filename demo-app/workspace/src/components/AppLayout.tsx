@@ -18,7 +18,7 @@ import { ReservationStatus } from "../types.ts";
 import TimezoneChooser from "./TimezoneChooser.tsx";
 
 // Auf true setzen, um den Link zum Reservation-Editor anzuzeigen
-const showCreateLink = false;
+const showCreateLink = true;
 
 const ReservationStatusChangedEvent = z.object({
   reservationId: z.string(),

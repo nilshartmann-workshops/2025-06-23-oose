@@ -40,9 +40,8 @@ function ReservationDetailLoader({
 
   return (
     <Box display={"flex"} alignItems={"center"} marginX={"10px"}>
-      <Warning />
-      <ReservationDetailCard reservation={reservation} />;
-      <CounterView />
+      {/*<Warning />*/}
+      <ReservationDetailCard reservation={reservation} />;{/*<CounterView />*/}
     </Box>
   );
 }
