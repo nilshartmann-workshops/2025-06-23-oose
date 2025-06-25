@@ -1,13 +1,31 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, ButtonGroup, FormControl, TextField } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
+
+import { foodTrucks } from "../data.ts";
+import FoodTruckSelect from "./FoodTruckSelect.tsx";
+
+// Pattern "Render" Property
+// function DndComponent(props) {
+//   // wo ist die Maus ausrechnen?
+//   return <div className={"Canvas"}>
+//     {props.render(x, y)}
+//   </div>
+// }
+//
+// function MeineKomponente() {
+//   <DndComponent
+//     render={ (x,y) => <Block /> }
+//   ></DndComponent>
+// }
 
 // react hook form
 //   (alternative: TanStack Form)
 
 const ReservationFormState = z.object({
   customerName: z.string().nonempty("Sie müssen Ihren Namen angeben!"),
+  foodTruckId: z.string().nonempty("Bitte wählen Sie den Foodtruck aus"),
   expectedGuests: z
     .number("Bitte geben Sie die Anzahl der Gäste als Zahl ein")
     .min(5, "Sie müssen mindestens fünf Gäste angeben"),
@@ -19,6 +37,10 @@ export default function ReserverationEditor() {
   const form = useForm({
     resolver: zodResolver(ReservationFormState),
     mode: "onChange",
+    defaultValues: {
+      expectedGuests: 20,
+      foodTruckId: "",
+    },
   });
 
   const handleSave = (data: IReservationFormState) => {
@@ -42,6 +64,21 @@ export default function ReserverationEditor() {
           }
         />
       </FormControl>
+
+      <Controller
+        control={form.control}
+        name={"foodTruckId"}
+        render={(field) => (
+          <FoodTruckSelect
+            availableFoodTrucks={foodTrucks}
+            errorMessage={field.fieldState.error?.message}
+            selectedFoodTruckId={field.field.value}
+            onSelectedFoodTruckIdChange={(newFoodTruckId) => {
+              field.field.onChange(newFoodTruckId);
+            }}
+          />
+        )}
+      />
 
       <FormControl fullWidth margin="normal">
         <TextField
