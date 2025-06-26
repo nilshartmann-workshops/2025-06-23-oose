@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 import OrderButtonBar from "../components/OrderButtonBar.tsx";
@@ -38,6 +38,22 @@ export default function ReservationListRoute() {
            - mit isFetching können wir das prüfen
 
       */}
+
+      <Link to={"/hello"}>Hello World</Link>
+      <Link to={"/user/$userId"} params={{ userId: "123" }}>
+        User
+      </Link>
+      <Link
+        to={"/user/liste"}
+        search={(s) => ({
+          sortBy: "fasdfsad",
+          page: 100,
+          ...s,
+        })}
+      >
+        Liste
+      </Link>
+
       <Suspense fallback={<ReservationTablePlaceholder />}>
         <ReservationsLoader />
       </Suspense>

@@ -9,10 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HelloRouteImport } from './routes/hello'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreateIndexRouteImport } from './routes/create/index'
 import { Route as ReservationIdIndexRouteImport } from './routes/$reservationId/index'
+import { Route as UserListeRouteImport } from './routes/user/liste'
+import { Route as UserUserIdRouteImport } from './routes/user/$userId'
 
+const HelloRoute = HelloRouteImport.update({
+  id: '/hello',
+  path: '/hello',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -28,39 +36,87 @@ const ReservationIdIndexRoute = ReservationIdIndexRouteImport.update({
   path: '/$reservationId/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserListeRoute = UserListeRouteImport.update({
+  id: '/user/liste',
+  path: '/user/liste',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserUserIdRoute = UserUserIdRouteImport.update({
+  id: '/user/$userId',
+  path: '/user/$userId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hello': typeof HelloRoute
+  '/user/$userId': typeof UserUserIdRoute
+  '/user/liste': typeof UserListeRoute
   '/$reservationId': typeof ReservationIdIndexRoute
   '/create': typeof CreateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hello': typeof HelloRoute
+  '/user/$userId': typeof UserUserIdRoute
+  '/user/liste': typeof UserListeRoute
   '/$reservationId': typeof ReservationIdIndexRoute
   '/create': typeof CreateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hello': typeof HelloRoute
+  '/user/$userId': typeof UserUserIdRoute
+  '/user/liste': typeof UserListeRoute
   '/$reservationId/': typeof ReservationIdIndexRoute
   '/create/': typeof CreateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$reservationId' | '/create'
+  fullPaths:
+    | '/'
+    | '/hello'
+    | '/user/$userId'
+    | '/user/liste'
+    | '/$reservationId'
+    | '/create'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$reservationId' | '/create'
-  id: '__root__' | '/' | '/$reservationId/' | '/create/'
+  to:
+    | '/'
+    | '/hello'
+    | '/user/$userId'
+    | '/user/liste'
+    | '/$reservationId'
+    | '/create'
+  id:
+    | '__root__'
+    | '/'
+    | '/hello'
+    | '/user/$userId'
+    | '/user/liste'
+    | '/$reservationId/'
+    | '/create/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HelloRoute: typeof HelloRoute
+  UserUserIdRoute: typeof UserUserIdRoute
+  UserListeRoute: typeof UserListeRoute
   ReservationIdIndexRoute: typeof ReservationIdIndexRoute
   CreateIndexRoute: typeof CreateIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/hello': {
+      id: '/hello'
+      path: '/hello'
+      fullPath: '/hello'
+      preLoaderRoute: typeof HelloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,11 +138,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReservationIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/liste': {
+      id: '/user/liste'
+      path: '/user/liste'
+      fullPath: '/user/liste'
+      preLoaderRoute: typeof UserListeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/$userId': {
+      id: '/user/$userId'
+      path: '/user/$userId'
+      fullPath: '/user/$userId'
+      preLoaderRoute: typeof UserUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HelloRoute: HelloRoute,
+  UserUserIdRoute: UserUserIdRoute,
+  UserListeRoute: UserListeRoute,
   ReservationIdIndexRoute: ReservationIdIndexRoute,
   CreateIndexRoute: CreateIndexRoute,
 }
